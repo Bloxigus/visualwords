@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.bloxigus.onespecificvisualword.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "GuiGraphicsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "StringSplitterMixin"
+  ]
+}

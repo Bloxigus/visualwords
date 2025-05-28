@@ -1,23 +1,16 @@
 package dev.bloxigus.onespecificvisualword
 
-import com.google.gson.Gson
+import dev.bloxigus.onespecificvisualword.command.ReloadCommand
+import dev.bloxigus.onespecificvisualword.command.VisualWordsConfigCommand
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 
 class ClientInitializer : ClientModInitializer {
     override fun onInitializeClient() {
-        val configStream = javaClass.getResourceAsStream("/assets/onespecificvisualword/config.json") ?: throw Error("config error (oosies)")
-        val tempConfig = gson.fromJson(
-            configStream.readAllBytes().toString(Charsets.UTF_8),
-            Map::class.java)
-        for (keyVal in tempConfig) {
-            val key = keyVal.key as String
-            val value = keyVal.value as String
-            WordReplacer.parseComponentFromString(value) ?.let {
-                Config.words[key] = it
-            }
+        Config.loadConfig()
+        ClientCommandRegistrationCallback.EVENT.register() { dispatcher, registry ->
+            ReloadCommand.register(dispatcher)
+            VisualWordsConfigCommand.register(dispatcher)
         }
-    }
-    companion object {
-        private val gson = Gson()
     }
 }

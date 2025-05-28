@@ -16,7 +16,7 @@ public class StringSplitterMixin {
             argsOnly = true
     )
     public FormattedCharSequence modifyStringWidth(FormattedCharSequence value) {
-        return WordReplacer.fromCharSequence(value);
+        return WordReplacer.replaceInComponents(value);
     }
 
     @ModifyVariable(
@@ -26,6 +26,6 @@ public class StringSplitterMixin {
             argsOnly = true
     )
     public String modifyStringWidth(String value) {
-        return WordReplacer.fromString(value);
+        return WordReplacer.replaceInString(value);
     }
 }

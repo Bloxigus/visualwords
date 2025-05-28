@@ -16,7 +16,7 @@ public class GuiGraphicsMixin {
             argsOnly = true
     )
     public FormattedCharSequence modifyCharSequence(FormattedCharSequence value) {
-        return WordReplacer.fromCharSequence(value);
+        return WordReplacer.replaceInComponents(value);
     }
     @ModifyVariable(
             method = "drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;IIIZ)I",
@@ -25,6 +25,6 @@ public class GuiGraphicsMixin {
             argsOnly = true
     )
     public String modifyCharSequence(String value) {
-        return WordReplacer.fromString(value);
+        return WordReplacer.replaceInString(value);
     }
 }

@@ -1,0 +1,28 @@
+{
+  "words": [
+    {
+      "replace": "\"bloxigus\"",
+      "with": "\"Bloxigus\""
+    },
+    {
+      "replace": "\"DaMathBoi\"",
+      "with": "\"Mitty\""
+    },
+    {
+      "replace": "\"SpruceSlab\"",
+      "with": "[\"\",{\"text\":\"Sapling\",\"bold\":true,\"color\":\"gold\"},\"\uD83E\uDE77\"]"
+    },
+    {
+      "replace": "\"ReyMaratov\"",
+      "with": "\"Sweetheart\""
+    },
+    {
+      "replace": "\"AndresRocks\"",
+      "with": "[\"\",{\"text\":\"Papi\",\"bold\":true,\"color\":\"blue\"},\"\uD83E\uDE77\"]"
+    },
+    {
+      "replace": "\"PrincessVictra\"",
+      "with": "{\"text\":\"Bitesized\",\"bold\":true,\"color\":\"light_purple\"}"
+    }
+  ]
+}

@@ -1,6 +1,9 @@
 package dev.bloxigus.onespecificvisualword
 
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import dev.bloxigus.onespecificvisualword.Config.Companion.config
+import dev.bloxigus.onespecificvisualword.StyledLetter.Companion.cacheKey
 import dev.bloxigus.onespecificvisualword.StyledLetter.Companion.replaceWith
 import dev.bloxigus.onespecificvisualword.StyledLetter.Companion.toFormattedCharSink
 import dev.bloxigus.onespecificvisualword.StyledLetter.Companion.toUnstyledString
@@ -10,6 +13,8 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.network.chat.Style
 import net.minecraft.util.FormattedCharSequence
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 object WordReplacer {
     fun parseComponentFromString(string: String): MutableComponent? {
@@ -40,22 +45,31 @@ object WordReplacer {
         }
     }
 
+    private val timeLimitedCache: Cache<Int, List<StyledLetter>> = CacheBuilder.newBuilder()
+        .expireAfterWrite(5.minutes.toJavaDuration())
+        .build()
+
+    private fun getCached(input: List<StyledLetter>): List<StyledLetter>? {
+
+        val ctr = cachedTrieRoot ?: return null
+
+        return timeLimitedCache.get(input.cacheKey()) {
+            input.replaceWith(ctr)
+        }
+    }
+
     @JvmStatic
     fun replaceInComponents(original: FormattedCharSequence): FormattedCharSequence {
         val styledLetters = StyledLetter.fromFormattedCharSequence(original)
 
-        val cachedTrieRoot = cachedTrieRoot ?: return original
-
-        return styledLetters.replaceWith(cachedTrieRoot).toFormattedCharSink()
+        return getCached(styledLetters)?.toFormattedCharSink() ?: original
     }
 
     @JvmStatic
     fun replaceInString(original: String): String {
         val styledLetters = StyledLetter.fromString(original)
 
-        val cachedTrieRoot = cachedTrieRoot ?: return original
-
-        return styledLetters.replaceWith(cachedTrieRoot).toUnstyledString()
+        return getCached(styledLetters)?.toUnstyledString() ?: original
     }
 }
 
@@ -181,6 +195,15 @@ data class StyledLetter (
                     it.x
                 )
             }
+        }
+
+        fun List<StyledLetter>.cacheKey(): Int {
+            var value = 0
+            for (styledLetter in this) {
+                value = value * 31 + styledLetter.character
+                value = value * 31 + styledLetter.style.hashCode()
+            }
+            return value
         }
     }
 }
